@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react'
 import debounce from 'lodash/debounce'
-import color from '../../helpers/color'
+import * as color from '../../helpers/color'
 
 export const ColorWrap = (Picker) => {
   class ColorPicker extends (PureComponent || Component) {
@@ -16,10 +16,10 @@ export const ColorWrap = (Picker) => {
       }, 100)
     }
 
-    componentWillReceiveProps(nextProps) {
-      this.setState({
-        ...color.toState(nextProps.color, this.state.oldHue),
-      })
+    static getDerivedStateFromProps(nextProps, state) {
+      return {
+        ...color.toState(nextProps.color, state.oldHue),
+      }
     }
 
     handleChange = (data, event) => {
@@ -36,7 +36,6 @@ export const ColorWrap = (Picker) => {
       const isValidColor = color.simpleCheckForValidColor(data)
       if (isValidColor) {
         const colors = color.toState(data, data.h || this.state.oldHue)
-        this.setState(colors)
         this.props.onSwatchHover && this.props.onSwatchHover(colors, event)
       }
     }
